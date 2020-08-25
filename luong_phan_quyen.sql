@@ -34,10 +34,21 @@
 --(*) Menu_Click() -> click vào cây menu
   -- ShowAccessRight(): Show các nút phân quyền
   
+--(*) X_TransCheckbox_CheckedChanged: Sự kiện click vào checkbox của quyền approve, create (GD)
+  -- --> X_DoTransCheckboxChange
+  -- --> X_ReplaceTransAllow: build cmdallow
+  -- --> X_DoTransEditTLTXFilter: build mv_strTLTXAuth, mv_strTLTXAuth_user, remove giá trị cũ, add gt mới hTLTXFilter
+  
+--(*) ckbGNRACC_CheckedChanged: Access click
+  -- --> DoGnrAccessCheckedChangedMenuGroup -> GnrAccessCheckbox_CheckedChanged -> DoGNRACCCheckboxChange
+--(*) ckbGNRACC_Click: Access click
+  -- --> DoGnrCheckedChangedMenuGroup       -> GnrCheckbox_CheckedChanged       -> DoGnrCheckboxChange (mv_strFuncAuth)
+
+-- v_strCmdInquiryFunc AddChildAdjustMenu ChangeImageIndex 
+-- X_EnableTransAssignment, EnableGnrTranAssignment, EnableFuncTranAssignment
 
 
 
--- v_strCmdInquiryFunc
 Select M.CMDID CMDID, M.LEV LEV, A.CMDALLOW CMDALLOW, A.STRAUTH STRAUTH 
 from CMDMENU M, CMDAUTH A 
 where M.CMDID = A.CMDCODE and A.AUTHTYPE = 'G' and A.CMDALLOW = 'Y' and A.AUTHID = '0002' and A.CMDTYPE = 'M'
