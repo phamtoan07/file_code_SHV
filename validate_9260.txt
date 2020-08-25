@@ -1,0 +1,14 @@
+insert into fldval (FLDNAME, OBJNAME, ODRNUM, VALTYPE, OPERATOR, VALEXP, VALEXP2, ERRMSG, EN_ERRMSG, TAGFIELD, TAGVALUE, CHKLEV)
+values ('10', '9260', 0, 'V', '>>', '@0', null, 'Số tiền phải lớn hơn 0', 'The amount should be greater than 0', null, null, 0);
+
+insert into fldval (FLDNAME, OBJNAME, ODRNUM, VALTYPE, OPERATOR, VALEXP, VALEXP2, ERRMSG, EN_ERRMSG, TAGFIELD, TAGVALUE, CHKLEV)
+values ('01', '9260', 5, 'I', 'FX', 'FN_CHK_CLEARDATE_9260', '08##01', 'Ngày thanh toán phải là ngày làm việc tiếp theo của ngày giao dịch', 'Clear date must be the next working date of trading date', null, null, 0);
+
+insert into fldval (FLDNAME, OBJNAME, ODRNUM, VALTYPE, OPERATOR, VALEXP, VALEXP2, ERRMSG, EN_ERRMSG, TAGFIELD, TAGVALUE, CHKLEV)
+values ('08', '9260', 1, 'V', '<=', 'BDATE', null, 'Ngày giao dịch phải nhỏ hơn hoặc bằng ngày hiện tại', 'Trading date must be less than current date', null, null, 0);
+
+insert into fldval (FLDNAME, OBJNAME, ODRNUM, VALTYPE, OPERATOR, VALEXP, VALEXP2, ERRMSG, EN_ERRMSG, TAGFIELD, TAGVALUE, CHKLEV)
+values ('08', '9260', 2, 'V', '==', '<$WORKDATE>', '08', 'Ngày giao dịch phải là ngày làm việc', 'Trading date must be working date', null, null, 0);
+
+insert into fldval (FLDNAME, OBJNAME, ODRNUM, VALTYPE, OPERATOR, VALEXP, VALEXP2, ERRMSG, EN_ERRMSG, TAGFIELD, TAGVALUE, CHKLEV)
+values ('01', '9260', 2, 'E', 'FX', 'getnextworkingdate9260', '08', null, null, null, null, 0);

@@ -1,0 +1,43 @@
+﻿
+select * from cmdmenu where prid =  '111200' for update; RMCBFABANKPAYMENT RMFACBSTATEMENT
+
+-----
+insert into cmdmenu (CMDID, PRID, LEV, LAST, MENUTYPE, MENUCODE, MODCODE, OBJNAME, CMDNAME, EN_CMDNAME, AUTHCODE, TLTXCD)
+values ('111215', '111200', 3, 'Y', 'O', 'RM0019', 'RM', 'RMCBFABANKPAYMENT', 'Đồng bộ thị thanh toán', 'Bank payment instruction status (from CB)', 'NYYNYYNNNN', null);
+
+insert into cmdmenu (CMDID, PRID, LEV, LAST, MENUTYPE, MENUCODE, MODCODE, OBJNAME, CMDNAME, EN_CMDNAME, AUTHCODE, TLTXCD)
+values ('111216', '111200', 3, 'Y', 'O', 'RM0020', 'RM', 'RMFACBSTATEMENT', 'Đồng bộ bảng kê từ FA', 'Bank transfer statement status (from FA)', 'NYYNYYNNNN', null);
+-----
+SELECT C.GLOBALID,C.CUSTODYCD,C.ACCTNO,C.REFBANKACCT, A1.EN_CDCONTENT TXTYPE,A3.EN_CDCONTENT TRANSTYPE,
+       C.TLTXCD,C.TXNUM,C.TXDATE,C.CITAD,C.BENEFICIARYACCOUNT BANKACCT,C.BANKNAME,C.CUSTNAME,C.TXAMT,C.REFCONTRACT,
+       A2.EN_CDCONTENT FEETYPE,C.SUPERBANK,A4.EN_CDCONTENT ISAPPRSB ,A5.EN_CDCONTENT BANKSTATUS,
+       C.RESPONSE,C.VALUEDATE 
+FROM CBFA_BANKPAYMENT C, ALLCODE A1, ALLCODE A2, ALLCODE A3, ALLCODE A4, ALLCODE A5
+WHERE A1.CDNAME = 'CBTXTYPE' AND A1.CDVAL = C.TXTYPE
+      AND A2.CDNAME = 'IOROFEE' AND A2.CDVAL = C.FEETYPE AND A2.CDTYPE = 'SA'
+      AND A3.CDTYPE = 'FA'AND A3.CDNAME = 'TRANSTYPE' AND A3.CDVAL = C.TRANSTYPE
+      AND A4.CDTYPE = 'SA'AND A4.CDNAME = 'ISAPPRSB' AND A4.CDVAL = C.ISAPPRSB
+      AND A5.CDTYPE = 'SA'AND A5.CDNAME = 'SYNCBANKSTATUS' AND A5.CDVAL = C.BANKSTATUS; 
+select * from search where searchcode in ('RMCBFABANKPAYMENT') for update;
+
+select * from searchfld where searchcode in ('RMCBFABANKPAYMENT') for update;
+select FIELDCODE, FIELDNAME, FIELDTYPE,EN_FIELDNAME  from searchfld where searchcode in ('RMCBFABANKPAYMENT') for update;
+update searchfld set display  = 'Y' where searchcode in ('RMCBFABANKPAYMENT'); beneficiaryaccount
+
+-----
+alter table facb_statementgroup add feetype varchar(1) default '0'; 
+update facb_statementgroup set feetype = '0';
+
+SELECT F.GLOBALID,F.CUSTODYCD,F.FUNDACCOUNT, F.SETTLEMENTDATE,A1.EN_CDCONTENT TXTYPE,F.SYMBOL,F.BENEFICIARYACCOUNT BANKACCT,
+       F.BENEFICIARYBANK BANKNAME, F.BENEFICIARYNAME CUSTNAME,F.TXAMT,
+       A2.EN_CDCONTENT BANKSTATUS, F.VAT, F.TAXAMT,A3.EN_CDCONTENT FEETYPE, F.RESPONSE
+FROM FACB_STATEMENTGROUP F,ALLCODE A1, ALLCODE A2, ALLCODE A3
+WHERE A1.CDNAME = 'CBTXTYPE' AND A1.CDVAL = F.TXTYPE
+      AND A2.CDTYPE = 'SA'AND A2.CDNAME = 'SYNCBANKSTATUS' AND A2.CDVAL = F.BANKSTATUS
+      AND A3.CDNAME = 'IOROFEE' AND A3.CDVAL = F.FEETYPE AND A3.CDTYPE = 'SA'; 
+
+select * from search where searchcode in ('RMFACBSTATEMENT') for update;
+select * from searchfld where searchcode in ('RMFACBSTATEMENT') for update;
+select FIELDCODE, FIELDNAME, FIELDTYPE,EN_FIELDNAME  from searchfld where searchcode in ('RMCBFABANKPAYMENT') for update;
+update searchfld set display  = 'Y' where searchcode in ('RMCBFABANKPAYMENT'); beneficiaryaccount
+select * from allcode where cdname = 'SYNCBANKSTATUS' for update;

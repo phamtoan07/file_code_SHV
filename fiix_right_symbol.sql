@@ -1,0 +1,16 @@
+select * from search where searchcode IN ('FA1002','FA1000','FA1001','FA1005','FA1004');
+
+--9308 9322 9326 9378 9387 9238 9381 9382 9383 9411 9412 FA0059 FA1004 9231,9391,9384
+
+--FA1000: 9381
+--FA1001: 9383 9388 9389
+--FA1002: 9320 9321 9322 9378 9336 9308 9387
+--FA1004: 9384
+--FA1005: 9337 9238 9382 9393
+
+------============
+
+select * from search where searchcode IN ('FA1000');
+
+select * from CBFAGLMASTEXT;
+
