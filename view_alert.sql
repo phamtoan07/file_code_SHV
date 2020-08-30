@@ -1,26 +1,29 @@
 ﻿select * from search where searchcode = 'ALERT' for update;
 select * from searchfld where searchcode = 'ALERT' for update;
 
+select * from search where searchcode='PAYSCHEDULE' for update;
+
+SELECT ROWNUM STT, V.* FROM VW_NOTIFY_ALERT V WHERE 0=0 AND INSTR(v.tlid,'0001' || '|') > 0;
+SELECT ROWNUM STT, V.* FROM VW_NOTIFY_ALERT V WHERE 0=0 AND INSTR(v.tlid,'<@KEYVALUE>' || '|') > 0;
+
+VW_REMINDER_CREATE_TIME update
+
+select * from payschedule where codeid = '000009' for update;
+select * from reminderemail where fundcodeid = '000009' for update;
+
+select * from allcode where cdname = 'PAYFREQUENCY';
+select to_char(TO_DATE('02-SEP-2020'), 'dd') from dual;
+select to_char(TO_DATE('30-SEP-2020'), 'mm') from dual;
+
+select to_char(pck_cldr.fn_get_num_month_of_q(TO_DATE('30-JUN-2020'))) from dual;
+select to_char(pck_cldr.fn_get_num_month_of_halfyear(TO_DATE('30-SEP-2020'))) from dual;
+
+select substr('Q3|M30',5,2) from dual;
+
+select getcurrdate from dual;
 
 select * from search where searchcode = 'FA0057';
 
-SELECT ROWNUM STT,SYMBOL,DES,TLID
-FROM
-(
-SELECT des, tlid, symbol FROM VW_ALERT_FOR_ADMIN
-union
-select notes des, '0001' tlid, refsymbol from alert_temp where txdate >= getcurrdate - 5
-union
-select notes des, '0001' tlid, symbol
-from (select symbol
-             (case when intfloatcd = 'Y' then 
-                   (case when INTNEXTDT - getcurrdate <= 10 and INTNEXTDT - getcurrdate >= 0 
-                         then 'Payment date is approaching, change interest rate if necessary' end) 
-              end) notes 
-      from instrlist)
-where notes is not null
-)
-WHERE 0=0
 
 SELECT DISTINCT FU.CODEID FUNDCODEID, FU.SYMBOL, A1.EN_CDCONTENT REMINDTYPE, P.PAYTYPE REMINDCD, 
        P.FREQUENCY FREQUENCYCD, A2.EN_CDCONTENT FREQUENCY, 'Auto' TYPEALERT, 
