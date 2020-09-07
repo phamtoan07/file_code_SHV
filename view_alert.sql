@@ -1,7 +1,13 @@
 ﻿select * from search where searchcode = 'ALERT' for update;
 select * from searchfld where searchcode = 'ALERT' for update;
 
+select trunc(ADD_MONTHS(TO_DATE('02-SEP-2020'),1)) from dual;
+
 select * from search where searchcode='PAYSCHEDULE' for update;
+
+select * from VW_NOTIFY_ALERT;
+
+select FNC_GET_REMINDID('000003','SBDR') from dual;
 
 SELECT ROWNUM STT, V.* FROM VW_NOTIFY_ALERT V WHERE 0=0 AND INSTR(v.tlid,'0001' || '|') > 0;
 SELECT ROWNUM STT, V.* FROM VW_NOTIFY_ALERT V WHERE 0=0 AND INSTR(v.tlid,'<@KEYVALUE>' || '|') > 0;
@@ -18,12 +24,26 @@ select to_char(TO_DATE('30-SEP-2020'), 'mm') from dual;
 select to_char(pck_cldr.fn_get_num_month_of_q(TO_DATE('30-JUN-2020'))) from dual;
 select to_char(pck_cldr.fn_get_num_month_of_halfyear(TO_DATE('30-SEP-2020'))) from dual;
 
-select substr('Q3|M30',5,2) from dual;
+select substr('T3|M30',instr('T3|M30','T')+1,instr('T3|M30','|')-instr('T3|M30','T')-1) from dual;
 
+select substr('T12|M30',instr('T12|M30','T')+1,instr('T12|M30','|')-instr('T12|M30','T')-1) from dual;
+
+select instr('T3|M30','T')+1 from dual;
 select getcurrdate from dual;
 
 select * from search where searchcode = 'FA0057';
+select * from sbcldr where cldrtype = '000';
 
+
+select f.txtype, f.fundcodeid,
+       case when f.txtype <> 'SEVFEE' then fn_get_tradedate_reminder(f.autoid) else f.settlementdate end tradingdate
+from fastatement f where f.status = 'P' and f.deltd <>'Y'
+union all
+select f.txtype, f.fundcodeid, 
+      case when f.txtype <> 'SEVFEE' then fn_get_tradedate_reminder(f.autoid) else f.settlementdate end tradingdate
+from fastatement f, fastatementgroup g  
+where f.status = 'G' and g.autoid = f.grid and g.status = 'N' 
+      and g.deltd <>'Y' and f.deltd<> 'Y'
 
 SELECT DISTINCT FU.CODEID FUNDCODEID, FU.SYMBOL, A1.EN_CDCONTENT REMINDTYPE, P.PAYTYPE REMINDCD, 
        P.FREQUENCY FREQUENCYCD, A2.EN_CDCONTENT FREQUENCY, 'Auto' TYPEALERT, 
@@ -157,3 +177,23 @@ SELECT FU.SYMBOL, TO_DATE(SB.CREATEDT,'DD/MM/RRRR') || ' - ' || A2.EN_CDCONTENT 
 FROM SBACTIMST SB, FUND FU, ALLCODE A2
 WHERE SB.REFCODE = FU.CODEID AND SB.STATUS NOT IN ('C','F','D') AND SB.DELTD <> 'Y'
       AND nvl(SB.PRIORITY,'I') = A2.CDVAL AND A2.CDTYPE = 'SB' AND A2.CDNAME = 'PRIORITY';
+
+--===- Đáo hạn repo
+SELECT v.SYMBOL || ' - ' || v.REMINDTYPE || ' - ' ||  TO_DATE(G.TODATE,'DD/MM/RRRR') DES,
+       '0001' tlid, v.symbol, v.createdtime
+FROM GLMASTEXT G, vw_reminder_create_time v
+WHERE G.ACEXTTYPE = 'RP' AND G.STATUS <> 'C' AND G.Deltd <> 'Y'
+      AND G.FUNDCODEID = v.FUNDCODEID
+      AND v.REMINDCD IN ('FAREPO')
+--===-Chốt hđ CA OTC     
+SELECT v.SYMBOL || ' - ' || v.REMINDTYPE || ' - ' || A1.EN_CDCONTENT DES,
+       '0001' tlid, v.symbol,v.createdtime
+FROM FACAMAST CA, INSTRLIST INS, CBFACAMAST CB, FUND FU, vw_reminder_create_time v, ALLCODE A1
+WHERE CA.CODEID = INS.SYMBOL AND INS.BOARD = 'OTC'
+      AND CA.STATUS = 'A' AND CB.STATUS = 'T' AND CB.DELTD <> 'Y'
+      AND CB.CAMASTID = CA.CAMASTID AND CB.CUSTODYCD = FU.CUSTODYCD
+      AND v.FUNDCODEID = FU.CODEID and v.REMINDCD = 'FAOTC'
+      AND A1.CDTYPE = 'CA' AND A1.CDNAME = 'CATYPE' AND A1.CDVAL = CA.CATYPE
+
+
+select * from vw_reminder_create_time;
