@@ -14,12 +14,13 @@
 -- OTCCONFIRM -> CBFACONFIRMOTC
 -- CAMAST -> CBFACAMAST -> 9378...
 -- AUTO_EXEC_TRANS -> AUTO transaction
+--=======================================
 
-select * from tltx where tltxcd = '9421';
-select * from fldmaster where objname = '9445';
-select * from fldval where objname = '9445';
+--Còn các view liên quan đến sự kiện quyền: FA1002, FA1000, FA1001, FA1005, FA0059, FA1004
+----> Chưa thêm cột CB BUSDATE
 
-select * from tlog where ltexte like '%CRBTXREQ_CITAD_REVERT transactionnumber:%';
+--Chưa fill CB busdate lên màn hình gd: View gọi 1 gd, View gọi nhiều gd 
 
+--Các gd auto khi có sync từ CB: đã fill busdate theo CB
 -----------
 
